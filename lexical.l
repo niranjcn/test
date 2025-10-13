@@ -12,19 +12,14 @@ int line_no = 1;
 [a-zA-Z_][a-zA-Z0-9_]*              { printf("Identifier\t: %s\n", yytext); }
 \"([^\"\\]|\\.)*\"                   { printf("String Literal\t: %s\n", yytext); }
 "=="|"!="|"<="|">="|"="|"+"|"-"|"*"|"/"|"%"   { printf("Operator\t: %s\n", yytext); }
-[(){};,]                            { /* ignore parentheses, braces, semicolon, comma */ }
+[(){};,]                            {}
 "<"|">"                              { printf("Relational Operator\t: %s\n", yytext); }
-[\r\n]+                              { line_no++; }   /* handle both \n and \r\n */
-[ \t]+                               { /* skip spaces and tabs */ }
-.                                     { /* ignore any other unknown characters */ }
+[\r\n]+                              { line_no++; }
+[ \t]+                               {}
+.                                     {}
 %%
-int main(int argc, char *argv[])
-{
-    if (argc != 2) {
-        printf("Usage: %s <input_file.c>\n", argv[0]);
-        return 1;
-    }
-    FILE *fp = fopen(argv[1], "r");
+int main() {
+    FILE *fp = fopen("input_file.c", "r");
     if (!fp) {
         perror("Error opening file");
         return 1;
@@ -32,7 +27,6 @@ int main(int argc, char *argv[])
     yyin = fp;
     yylex();
     printf("\nTotal Lines: %d\n", line_no);
-
     fclose(fp);
     return 0;
 }
