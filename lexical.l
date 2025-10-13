@@ -1,0 +1,39 @@
+%{
+#include <stdio.h>
+#include <string.h>
+int line_no = 1;
+%}
+%%
+"//".*                              { printf("Single-line Comment\t: %s\n", yytext); }
+"/*"([^*]|\*+[^*/])*"\*/"           { printf("Multi-line Comment\t: %s\n", yytext); }
+[ \t]*#[ \t]*include[ \t]*<[^>\n]+> { printf("Preprocessor directive\t: %s\n", yytext); }
+("auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"int"|"long"|"register"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while") { printf("Keyword\t\t: %s\n", yytext); }
+[0-9]+                              { printf("Number\t\t: %s\n", yytext); }
+[a-zA-Z_][a-zA-Z0-9_]*              { printf("Identifier\t: %s\n", yytext); }
+\"([^\"\\]|\\.)*\"                   { printf("String Literal\t: %s\n", yytext); }
+"=="|"!="|"<="|">="|"="|"+"|"-"|"*"|"/"|"%"   { printf("Operator\t: %s\n", yytext); }
+[(){};,]                            { /* ignore parentheses, braces, semicolon, comma */ }
+"<"|">"                              { printf("Relational Operator\t: %s\n", yytext); }
+[\r\n]+                              { line_no++; }   /* handle both \n and \r\n */
+[ \t]+                               { /* skip spaces and tabs */ }
+.                                     { /* ignore any other unknown characters */ }
+%%
+int main(int argc, char *argv[])
+{
+    if (argc != 2) {
+        printf("Usage: %s <input_file.c>\n", argv[0]);
+        return 1;
+    }
+    FILE *fp = fopen(argv[1], "r");
+    if (!fp) {
+        perror("Error opening file");
+        return 1;
+    }
+    yyin = fp;
+    yylex();
+    printf("\nTotal Lines: %d\n", line_no);
+
+    fclose(fp);
+    return 0;
+}
+int yywrap() { return 1; }
