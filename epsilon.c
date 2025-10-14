@@ -1,52 +1,54 @@
 #include <stdio.h>
+#include <string.h>
 
-#define MAX 20
+char result[20][20], t1[20][20], in[20][20], t2[20][20];
+int j;
 
-int n; // number of states
-int transition[MAX][MAX]; // adjacency matrix for ε-transitions (1 = epsilon move exists)
-int visited[MAX];
+void add(char *s) {
+    for (int i = 0; i < j; i++) {
+        if (!strcmp(result[i], s)) {
+            return;
+        }
+    }
+    strcpy(result[j++], s);
+}
 
-// Function to perform DFS for epsilon closure
-void epsilonClosure(int state) {
+void epsilon_closure(int n, char *s) {
     for (int i = 0; i < n; i++) {
-        // If there is an epsilon transition from state -> i and i not yet visited
-        if (transition[state][i] && !visited[i]) {
-            visited[i] = 1;
-            epsilonClosure(i);
+        if (!strcmp(s, t1[i]) && !strcmp(in[i], "e")) {
+            add(t2[i]);
+            epsilon_closure(n, t2[i]);
         }
     }
 }
 
 int main() {
-    int i, j;
+    int n, m;
+    char states[20][20];
 
     printf("Enter number of states: ");
     scanf("%d", &n);
 
-    printf("\nEnter epsilon transitions (Enter 1 if epsilon transition exists, else 0):\n");
-    printf("For example, if ε-transition exists from state i to state j, enter 1.\n\n");
-
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < n; j++) {
-            printf("ε-transition from q%d to q%d: ", i, j);
-            scanf("%d", &transition[i][j]);
-        }
+    printf("Enter states:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%s", states[i]);
     }
 
-    printf("\n----- Epsilon Closure of Each State -----\n");
+    printf("Enter number of transitions: ");
+    scanf("%d", &m);
 
-    for (i = 0; i < n; i++) {
-        // Reset visited array for each state
-        for (j = 0; j < n; j++)
-            visited[j] = 0;
+    printf("Enter transitions (state1 input state2):\n");
+    for (int i = 0; i < m; i++) {
+        scanf("%s %s %s", t1[i], in[i], t2[i]);
+    }
 
-        visited[i] = 1; // every state includes itself
-        epsilonClosure(i);
-
-        printf("ε-closure(q%d) = { ", i);
-        for (j = 0; j < n; j++) {
-            if (visited[j])
-                printf("q%d ", j);
+    for (int i = 0; i < n; i++) {
+        j = 0;
+        add(states[i]);
+        epsilon_closure(m, states[i]);
+        printf("\nEpsilon closure of %s = { ", states[i]);
+        for (int k = 0; k < j; k++) {
+            printf("%s ", result[k]);
         }
         printf("}\n");
     }
