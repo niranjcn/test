@@ -22,11 +22,14 @@ int main() {
     i = 0;
 
     while (1) {
+        // Shift step
         if (i < strlen(input)) {
+            char shifted = input[i];           // Save the shifted character
             strncat(stack, &input[i++], 1);
-            printf("%s\t%s\tShift\n", stack, input + i);
+            printf("%s\t%s\tShift '%c'\n", stack, input + i, shifted);
         }
 
+        // Reduction step
         for (j = 0; j < n; j++) {
             if ((sub = strstr(stack, rules[j].right))) {
                 stack[sub - stack] = '\0';
@@ -36,6 +39,7 @@ int main() {
             }
         }
 
+        // Acceptance check
         if (!strcmp(stack, rules[0].left) && i == strlen(input)) {
             printf("\nAccepted\n");
             break;
