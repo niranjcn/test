@@ -64,7 +64,7 @@ void constant()
                 case '=':
                 res = op1;
                 break;
-        }
+            }
         sprintf(res1, "%d", res);
         arr[i].flag = 1;
         change(i, res1);
@@ -89,8 +89,8 @@ void change(int p, char *res)
     for (i = p + 1; i < n; i++)
     {
         if (strcmp(arr[p].res, arr[i].op1) == 0)
-        strcpy(arr[i].op1, res);
+            strcpy(arr[i].op1, res);
         else if (strcmp(arr[p].res, arr[i].op2) == 0)
-        strcpy(arr[i].op2, res);
+            strcpy(arr[i].op2, res);
     }
 }
