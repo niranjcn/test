@@ -22,7 +22,7 @@ int main() {
     FILE *fp = fopen("input_file.c", "r");
     if (!fp) {
         perror("Error opening file");
-        return 1;
+        exit(0);
     }
     yyin = fp;
     yylex();

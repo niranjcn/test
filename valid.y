@@ -9,9 +9,8 @@ int yylex();
 %left '*' '/'
 %right '='
 %%
-statement: assignment;
-assignment: ID '=' expr;
-expr: expr '+' expr | expr '-' expr | expr '*' expr | expr '/' expr | '(' expr ')' | ID | NUMBER;
+assignment: ID '=' e;
+e: e '+' e | e '-' e | e '*' e | e '/' e | '(' e ')' | ID | NUMBER;
 %%
 void yyerror() {
     printf("Invalid expression\n");

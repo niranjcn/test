@@ -6,8 +6,7 @@ int yylex();
 %}
 %token letter
 %%
-statement: ID ;
-ID: letter;
+x: letter;
 %%
 void yyerror() {
     printf("Invalid identifier\n");

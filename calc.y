@@ -1,41 +1,28 @@
-/* calculator.y */
 %{
-    #include <stdio.h>
-    int yylex(void);
-    void yyerror(char *);
+    #include<stdio.h>
+    int flag=0;
+    void yyerror(char *s);
+    int yylex();
 %}
 
-// Define the token type and operator precedence
 %token NUMBER
-%left '+' '-'
-%left '*' '/'
+%left '+' '-' 
+%left '*' '/' '%'
+%left '(' ')'
 
 %%
-program:
-    program statement '\n'
-    |
-    ;
-
-statement:
-    expr                    { printf("Result: %d\n", $1); }
-    ;
-
-expr:
-    expr '+' expr           { $$ = $1 + $3; }
-    | expr '-' expr         { $$ = $1 - $3; }
-    | expr '*' expr         { $$ = $1 * $3; }
-    | expr '/' expr         { $$ = $1 / $3; }
-    | '(' expr ')'          { $$ = $2; }
-    | NUMBER                { $$ = $1; }
-    ;
+ArithemeticExpression: E { printf("Result %d\n",$$); return 0;};
+E: E '+' E {$$=$1+$3;} | E '-' E {$$=$1-$3;} | E '*' E {$$=$1*$3;} | E '/' E {$$=$1/$3;} | E '%' E {$$=$1%$3;} | '(' E ')' {$$=$2;} | NUMBER {$$=$1;};
 %%
 
-void yyerror(char *s) {
-    fprintf(stderr, "Error: %s\n", s);
+void main(){
+    printf("Enter the arithmetic expression to evaluate\n");
+    yyparse();
+    if(flag==0)
+        printf("The entered arithmetic expression is valid\n");
 }
 
-int main() {
-    printf("Enter an expression (e.g., 5 * (3 + 4)) followed by Enter:\n");
-    yyparse();
-    return 0;
+void yyerror(char *s){
+    flag=1;
+    printf("The entered expression is invalid\n");
 }

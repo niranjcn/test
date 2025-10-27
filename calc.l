@@ -1,20 +1,21 @@
-/* calculator.l */
 %{
-    #include "y.tab.h" // Include header from YACC
-    #include <stdlib.h>
-    void yyerror(char *);
+    #include<stdio.h>
+    #include<stdlib.h>
+    #include"y.tab.h"
+    extern int yylval;
+    void yyerror(char *s);
 %}
 
 %%
-[0-9]+      {
-                yylval = atoi(yytext); // Convert string to int and store in yylval
-                return NUMBER; 
-            }
-[-+*/()\n]   { return *yytext; } // Return operators as themselves
-[ \t]       ; /* Skip whitespace */
-.           { yyerror("Invalid character"); }
+[0-9]+ {yylval=atoi(yytext); return NUMBER;}
+[ \t] ;
+[\n] {return 0;}
+[+\-*/%] {return yytext[0];}
+[() ] {return yytext[0];}
+. { yyerror("Invalid character"); exit(1);}
+
 %%
 
-int yywrap() {
+int yywrap(){
     return 1;
 }

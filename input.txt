@@ -1,0 +1,18 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+// this is a comment line 
+
+/* this is a multi line commenr
+yes ofcourse 
+
+*/
+
+void main()
+{
+    int a,b,c;
+    a=1;
+    b=2;
+    c=a+b;
+    printf("Sum is %d\n",c);
+}

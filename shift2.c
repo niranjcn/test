@@ -1,56 +1,65 @@
 #include <stdio.h>
 #include <string.h>
 
-struct Rule { char left[10], right[10]; };
+struct Rule 
+{
+    char left[10], right[10]; 
+};
 
-int main() {
-    char input[20], stack[50] = "", temp[50], *sub;
-    int i = 0, n;
+int main() 
+{
+    char input[20], stack[50] = "", temp[50];
     struct Rule rules[10];
-
-    // Read rules
+    int i = 0, n, steps = 0;
     printf("Enter number of rules: ");
     scanf("%d", &n);
     printf("Enter rules (A->abc):\n");
-    for (i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) 
+    {
         scanf("%s", temp);
-        strcpy(rules[i].left, strtok(temp, "->"));
-        strcpy(rules[i].right, strtok(NULL, "->"));
+        strcpy(rules[j].left, strtok(temp, "->"));
+        strcpy(rules[j].right, strtok(NULL, "->"));
     }
-
-    // Read input
     printf("Enter input: ");
     scanf("%s", input);
-    i = 0;
-
-    while (1) {
-        // Shift
-        if (i < strlen(input)) {
-            char shifted = input[i];
-            strncat(stack, &input[i++], 1);
-            printf("%s\t%s\tShift '%c'\n", stack, input + i, shifted);
-        }
-
-        // Reduce
-        for (int j = 0; j < n; j++) {
-            if ((sub = strstr(stack, rules[j].right))) {
-                stack[sub - stack] = '\0';
-                strcat(stack, rules[j].left);
-                printf("%s\t%s\tReduce %s->%s\n", stack, input + i, rules[j].left, rules[j].right);
-                j = -1; // restart reductions
+    printf("\nStack\t Input\t Action\n");
+    printf("--------------------------------------------\n");
+    while (1) 
+    {
+        steps++;
+        int reduced = 1;
+        while (reduced) 
+        {
+            reduced = 0;
+            for (int j = 0; j < n; j++) 
+            {
+                int sl = strlen(stack), rl = strlen(rules[j].right);
+                if (sl >= rl && !strcmp(stack + sl - rl, rules[j].right)) 
+                {
+                    stack[sl - rl] = '\0';
+                    strcat(stack, rules[j].left);
+                    printf("%s\t %s\t Reduce %s->%s\n", stack, input + i, rules[j].left, rules[j].right);
+                    reduced = 1;
+                    break;
+                }
             }
         }
-
-        // Accept or reject
-        if (!strcmp(stack, rules[0].left) && i == strlen(input)) {
-            printf("\nAccepted\n");
+        if (!strcmp(stack, rules[0].left) && i == strlen(input)) 
+        {
+            printf("\nAccepted in %d steps\n", steps);
             break;
         }
-        if (i == strlen(input)) {
+        if (i < strlen(input)) 
+        {
+            char c = input[i];
+            strncat(stack, &input[i++], 1);
+            printf("%s\t %s\t Shift '%c'\n", stack, input + i, c);
+        }
+        else 
+        {
             printf("\nNot Accepted\n");
             break;
         }
     }
-
     return 0;
 }
