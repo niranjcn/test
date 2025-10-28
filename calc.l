@@ -1,19 +1,14 @@
 %{
     #include<stdio.h>
-    #include<stdlib.h>
-    #include"y.tab.h"
+    #include "y.tab.h"
+    int yyerror(char *);
     extern int yylval;
-    void yyerror(char *s);
 %}
 
 %%
-[0-9]+ {yylval=atoi(yytext); return NUMBER;}
-[ \t] ;
-[\n] {return 0;}
-[+\-*/%] {return yytext[0];}
-[() ] {return yytext[0];}
-. { yyerror("Invalid character"); exit(1);}
-
+[0-9]+    {yylval = atoi(yytext); return NUMBER;}
+[+\-*/%()] {return yytext[0];}
+.          {yyerror("Invalid Character"); exit(1);}
 %%
 
 int yywrap(){
