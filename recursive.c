@@ -1,91 +1,63 @@
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-
-char *input;   // pointer to input string
-char lookahead; // current character
-
-// function declarations
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
+#include<stdlib.h>
+int i = 0,error = 0;
+char input[100];
 void E();
-void Eprime();
 void T();
-void Tprime();
+void EP();
+void TP();
 void F();
 
-void error() {
-    printf("❌ Syntax Error\n");
-    exit(1);
+int main(){
+    printf("Enter an expression");
+    gets(input);
+    E();
+    if(strlen(input) == i && error == 0){
+        printf("Valid Expression");
+    }else{
+        printf("Invalid Expression");
+    }
 }
 
-void next() {
-    lookahead = *input++;  // move to next character
-}
-
-void match(char expected) {
-    if (lookahead == expected)
-        next();
-    else
-        error();
-}
-
-// Grammar implementation
-
-void E() {
+void E(){
     T();
-    Eprime();
+    EP();
 }
 
-void Eprime() {
-    if (lookahead == '+') {
-        match('+');
-        T();
-        Eprime();
-    }
-    // else epsilon (do nothing)
-}
-
-void T() {
+void T(){
     F();
-    Tprime();
+    TP();
 }
-
-void Tprime() {
-    if (lookahead == '*') {
-        match('*');
+void EP(){
+    if(input[i] == '+'){
+        i++;
+        T();
+        EP();
+    }
+}
+void TP(){
+    if(input[i] == '*'){
+        i++;
         F();
-        Tprime();
+        TP();
     }
-    // else epsilon
 }
-
-void F() {
-    if (isalpha(lookahead)) {   // identifier
-        match(lookahead);
-    } 
-    else if (lookahead == '(') {
-        match('(');
+void F(){
+    if(isalnum(input[i])){
+        i++;
+    }else if(input[i] == "("){
+        i++;
         E();
-        match(')');
-    } 
-    else {
-        error();
+        if(input[i] == ")"){
+            i++;
+        }else{
+            error = 1;
+        }
+
     }
-}
-
-int main() {
-    char expr[100];
-    printf("Enter expression: ");
-    scanf("%s", expr);
-
-    input = expr;
-    next();     // initialize lookahead
-
-    E();        // start from start symbol
-
-    if (lookahead == '\0')
-        printf("✅ Valid Expression\n");
-    else
-        printf("❌ Invalid Expression\n");
-
-    return 0;
+    else{
+        error = 1;
+    }
 }
